@@ -1,0 +1,55 @@
+{
+  "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+  "description": "Small multiples by age group: each panel shows that group's smoking rate (red) and lung cancer rate (navy) side by side, on a symlog scale so small and large numbers fit together. Per-bar value labels make the within-panel comparison readable. Reveals the long lag: smoking peaks at ages 35-54 but lung cancer rises sharply only at 55+. Data: data/by_age_group.csv (age_group, metric, value).",
+  "title": {
+    "text": "Decades of delay",
+    "subtitle": "Smoking peaks in middle age; lung cancer rates only catch up two or three decades later."
+  },
+  "data": { "url": "data/by_age_group.csv" },
+  "facet": {
+    "field": "age_group",
+    "type": "ordinal",
+    "sort": ["15-24", "25-34", "35-44", "45-54", "55-64", "65-74", "75+"],
+    "columns": 7,
+    "header": { "labelFontSize": 12, "labelFontWeight": 600, "title": null }
+  },
+  "spec": {
+    "width": 90,
+    "height": 220,
+    "layer": [
+      {
+        "mark": { "type": "bar", "cornerRadiusEnd": 2 },
+        "encoding": {
+          "x": {
+            "field": "metric", "type": "nominal",
+            "axis": { "title": null, "labelAngle": -30, "labelLimit": 80, "labelFontSize": 9 },
+            "sort": ["Smoking rate", "Lung cancer rate"]
+          },
+          "y": {
+            "field": "value", "type": "quantitative",
+            "scale": { "type": "symlog" },
+            "axis": { "title": "Rate (log)", "format": ".0f" }
+          },
+          "color": {
+            "field": "metric", "type": "nominal",
+            "scale": { "domain": ["Smoking rate", "Lung cancer rate"], "range": ["#c0392b", "#1f3a5f"] },
+            "legend": { "title": null, "orient": "top" }
+          },
+          "tooltip": [
+            { "field": "age_group", "type": "ordinal",      "title": "Age" },
+            { "field": "metric",    "type": "nominal",      "title": "Measure" },
+            { "field": "value",     "type": "quantitative", "title": "Rate", "format": ".1f" }
+          ]
+        }
+      },
+      {
+        "mark": { "type": "text", "align": "center", "baseline": "bottom", "dy": -3, "fontSize": 9, "fontWeight": 500, "color": "#1a1a1a" },
+        "encoding": {
+          "x":    { "field": "metric", "type": "nominal", "sort": ["Smoking rate", "Lung cancer rate"] },
+          "y":    { "field": "value",  "type": "quantitative" },
+          "text": { "field": "value",  "type": "quantitative", "format": ".0f" }
+        }
+      }
+    ]
+  }
+}

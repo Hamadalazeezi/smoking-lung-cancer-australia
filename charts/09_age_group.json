@@ -1,0 +1,58 @@
+{
+  "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+  "description": "Grouped bar chart of smoking rate and lung cancer rate by age group, on a shared axis. The legend is interactive: click a swatch to isolate one metric. A subtle annotation marks the 55-64 band where lung cancer overtakes smoking. Expected data: data/by_age_group.csv with columns age_group (ordered), metric (Smoking rate|Lung cancer rate), value.",
+  "title": {
+    "text": "Smoking is a younger person's habit, lung cancer an older person's disease",
+    "subtitle": "Smoking rate (per 100) and lung cancer incidence (per 100,000) by age group. Click a legend swatch to isolate."
+  },
+  "width": "container",
+  "height": 320,
+  "data": { "url": "data/by_age_group.csv" },
+  "layer": [
+    {
+      "params": [
+        {
+          "name": "metric_pick",
+          "select": { "type": "point", "fields": ["metric"] },
+          "bind": "legend"
+        }
+      ],
+      "mark": { "type": "bar", "cornerRadiusEnd": 2 },
+      "encoding": {
+        "x": {
+          "field": "age_group", "type": "ordinal",
+          "sort": ["15-24", "25-34", "35-44", "45-54", "55-64", "65-74", "75+"],
+          "axis": { "title": "Age group", "labelAngle": 0 }
+        },
+        "y": {
+          "field": "value", "type": "quantitative",
+          "axis": { "title": null }
+        },
+        "xOffset": { "field": "metric", "type": "nominal" },
+        "color": {
+          "field": "metric", "type": "nominal",
+          "scale": { "domain": ["Smoking rate", "Lung cancer rate"], "range": ["#c0392b", "#1f3a5f"] },
+          "legend": { "title": null, "orient": "top" }
+        },
+        "opacity": {
+          "condition": { "param": "metric_pick", "value": 1, "empty": true },
+          "value": 0.2
+        },
+        "tooltip": [
+          { "field": "age_group", "type": "ordinal",      "title": "Age group" },
+          { "field": "metric",    "type": "nominal",      "title": "Measure" },
+          { "field": "value",     "type": "quantitative", "title": "Value", "format": ".1f" }
+        ]
+      }
+    },
+    {
+      "data": { "values": [ { "age_group": "55-64", "label": "Cancer overtakes smoking around 55-64" } ] },
+      "mark": { "type": "text", "align": "center", "baseline": "bottom", "dy": -8, "fontSize": 11, "fontStyle": "italic", "color": "#4a4a4a" },
+      "encoding": {
+        "x":    { "field": "age_group", "type": "ordinal", "sort": ["15-24", "25-34", "35-44", "45-54", "55-64", "65-74", "75+"] },
+        "y":    { "value": 0 },
+        "text": { "field": "label", "type": "nominal" }
+      }
+    }
+  ]
+}

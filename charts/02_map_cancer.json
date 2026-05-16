@@ -1,0 +1,60 @@
+{
+  "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+  "description": "Layered horizontal bars: lung cancer ranks 5th by new cases but 1st by deaths in Australia (GLOBOCAN 2022). Each row is a cancer; the light bar shows new cases, the dark bar shows deaths the same year. An annotation flags lung cancer's outsized deaths-to-cases ratio. Data: data/cancer_deaths_top.csv (cancer, deaths, cases).",
+  "title": {
+    "text": "Lung cancer is Australia's deadliest cancer",
+    "subtitle": "New cases (light) vs. deaths (dark), 2022. Source: GLOBOCAN / IARC."
+  },
+  "width": "container",
+  "height": 380,
+  "data": { "url": "data/cancer_deaths_top.csv" },
+  "transform": [ { "calculate": "datum.cases - datum.deaths", "as": "survivors" } ],
+  "encoding": {
+    "y": {
+      "field": "cancer", "type": "nominal",
+      "sort": { "field": "deaths", "op": "max", "order": "descending" },
+      "axis": { "title": null, "labelLimit": 200 }
+    }
+  },
+  "layer": [
+    {
+      "mark": { "type": "bar", "color": "#f1d2c8", "cornerRadiusEnd": 2 },
+      "encoding": {
+        "x": {
+          "field": "cases", "type": "quantitative",
+          "axis": { "title": "People affected in 2022", "format": ",.0f" }
+        },
+        "tooltip": [
+          { "field": "cancer", "type": "nominal", "title": "Cancer" },
+          { "field": "cases",  "type": "quantitative", "title": "New cases", "format": ",.0f" },
+          { "field": "deaths", "type": "quantitative", "title": "Deaths",    "format": ",.0f" }
+        ]
+      }
+    },
+    {
+      "mark": { "type": "bar", "color": "#c0392b", "cornerRadiusEnd": 2 },
+      "encoding": {
+        "x": { "field": "deaths", "type": "quantitative" },
+        "tooltip": [
+          { "field": "cancer", "type": "nominal", "title": "Cancer" },
+          { "field": "deaths", "type": "quantitative", "title": "Deaths", "format": ",.0f" }
+        ]
+      }
+    },
+    {
+      "mark": { "type": "text", "align": "left", "dx": 6, "fontSize": 10, "color": "#1a1a1a" },
+      "encoding": {
+        "x":    { "field": "cases", "type": "quantitative" },
+        "text": { "field": "cases", "type": "quantitative", "format": ",.0f" }
+      }
+    },
+    {
+      "data": { "values": [ { "cancer": "Lung", "cases": 13426, "deaths": 9191, "label": "Lung cancer kills 68% of those diagnosed, the highest of any common cancer" } ] },
+      "mark": { "type": "text", "align": "left", "dx": 80, "fontSize": 10, "fontStyle": "italic", "color": "#7e1d10" },
+      "encoding": {
+        "x":    { "field": "cases", "type": "quantitative" },
+        "text": { "field": "label", "type": "nominal" }
+      }
+    }
+  ]
+}

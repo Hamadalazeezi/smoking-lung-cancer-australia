@@ -1,0 +1,148 @@
+{
+  "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+  "description": "Choropleth at the CITY (not state) level: each capital city is drawn as its actual ABS Local Government Area polygon (or for Canberra, the whole ACT, which is unincorporated). The state outlines sit beneath as a neutral backdrop so each city is anchored in its territory. Click a city to focus; double-click to clear. Source: ABS LGA 2022 boundaries via geoBoundaries.org (CC BY 4.0); rowanhogan/australian-states for the state backdrop; AIHW Cancer Data in Australia 2024 for state-level incidence (applied to the city contained in that state).",
+  "title": {
+    "text": "Where lung cancer falls hardest, by city",
+    "subtitle": "Each capital is drawn as its actual LGA polygon, in its own state. Click a city to focus."
+  },
+  "width": "container",
+  "height": 560,
+  "projection": { "type": "mercator" },
+  "layer": [
+    {
+      "data": {
+        "url": "data/australia-states.geojson",
+        "format": { "type": "json", "property": "features" }
+      },
+      "mark": {
+        "type": "geoshape",
+        "fill": "#f3eef8",
+        "stroke": "#cdc4dc",
+        "strokeWidth": 0.6
+      }
+    },
+    {
+      "data": {
+        "url": "data/city_boundaries.geojson",
+        "format": { "type": "json", "property": "features" }
+      },
+      "params": [
+        {
+          "name": "city_pick",
+          "select": { "type": "point", "fields": ["capital"], "on": "click", "clear": "dblclick" }
+        }
+      ],
+      "transform": [
+        {
+          "lookup": "properties.state",
+          "from": {
+            "data": { "url": "data/cancer_by_state.csv" },
+            "key": "state",
+            "fields": ["incidence", "national_avg"]
+          }
+        },
+        { "calculate": "datum.properties.capital", "as": "capital" },
+        { "calculate": "datum.properties.state",   "as": "state" }
+      ],
+      "mark": { "type": "geoshape", "stroke": "#1a1a1a", "strokeWidth": 1.2 },
+      "encoding": {
+        "color": {
+          "field": "incidence",
+          "type": "quantitative",
+          "scale": {
+            "type": "threshold",
+            "domain": [35, 40, 50, 65],
+            "range": ["#e6e2f0", "#b6a4d3", "#8a6db5", "#5e3d8e", "#3a1f5f"]
+          },
+          "legend": { "title": ["Lung cancer", "(per 100,000)"], "orient": "top-right" }
+        },
+        "opacity": {
+          "condition": { "param": "city_pick", "value": 1, "empty": true },
+          "value": 0.25
+        },
+        "tooltip": [
+          { "field": "capital",     "type": "nominal",      "title": "City" },
+          { "field": "state",       "type": "nominal",      "title": "State / Territory" },
+          { "field": "incidence",   "type": "quantitative", "title": "Cases per 100,000",  "format": ".1f" },
+          { "field": "national_avg","type": "quantitative", "title": "National average",   "format": ".1f" }
+        ]
+      }
+    },
+    {
+      "data": {
+        "url": "data/city_boundaries.geojson",
+        "format": { "type": "json", "property": "features" }
+      },
+      "mark": {
+        "type": "circle",
+        "color": "#1a1a1a",
+        "size": 18,
+        "opacity": 0.9
+      },
+      "encoding": {
+        "longitude": { "field": "properties.lng", "type": "quantitative" },
+        "latitude":  { "field": "properties.lat", "type": "quantitative" }
+      }
+    },
+    {
+      "data": {
+        "url": "data/city_boundaries.geojson",
+        "format": { "type": "json", "property": "features" }
+      },
+      "transform": [
+        {
+          "lookup": "properties.state",
+          "from": {
+            "data": { "url": "data/cancer_by_state.csv" },
+            "key": "state",
+            "fields": ["incidence"]
+          }
+        }
+      ],
+      "mark": {
+        "type": "text",
+        "align": "left",
+        "baseline": "middle",
+        "dx": 10,
+        "fontSize": 11,
+        "fontWeight": 600,
+        "color": "#1a1a1a"
+      },
+      "encoding": {
+        "longitude": { "field": "properties.lng", "type": "quantitative" },
+        "latitude":  { "field": "properties.lat", "type": "quantitative" },
+        "text":      { "field": "properties.capital", "type": "nominal" }
+      }
+    },
+    {
+      "data": {
+        "url": "data/city_boundaries.geojson",
+        "format": { "type": "json", "property": "features" }
+      },
+      "transform": [
+        {
+          "lookup": "properties.state",
+          "from": {
+            "data": { "url": "data/cancer_by_state.csv" },
+            "key": "state",
+            "fields": ["incidence"]
+          }
+        }
+      ],
+      "mark": {
+        "type": "text",
+        "align": "left",
+        "baseline": "top",
+        "dx": 10,
+        "dy": 6,
+        "fontSize": 10,
+        "color": "#5a5a5a"
+      },
+      "encoding": {
+        "longitude": { "field": "properties.lng", "type": "quantitative" },
+        "latitude":  { "field": "properties.lat", "type": "quantitative" },
+        "text":      { "field": "incidence", "type": "quantitative", "format": ".0f" }
+      }
+    }
+  ]
+}

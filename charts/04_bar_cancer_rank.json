@@ -1,0 +1,53 @@
+{
+  "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+  "description": "Bar chart of disease burden in Australia attributable to tobacco use. Each bar = % of that disease's total burden caused by tobacco, with the top two bars (lung cancer and COPD) annotated to highlight tobacco's outsized footprint. Data: data/tobacco_burden.csv (disease, attributable_pct). Source: Australian Burden of Disease Study 2011 (AIHW).",
+  "title": {
+    "text": "Smoking's wider footprint",
+    "subtitle": "Share (%) of each disease's burden in Australia attributable to tobacco. Source: AIHW Burden of Disease, 2011."
+  },
+  "width": "container",
+  "height": 380,
+  "data": { "url": "data/tobacco_burden.csv" },
+  "layer": [
+    {
+      "mark": { "type": "bar", "cornerRadiusEnd": 2 },
+      "encoding": {
+        "y": {
+          "field": "disease", "type": "nominal",
+          "sort": { "field": "attributable_pct", "op": "max", "order": "descending" },
+          "axis": { "title": null, "labelLimit": 220 }
+        },
+        "x": {
+          "field": "attributable_pct", "type": "quantitative",
+          "axis": { "title": "Share of disease burden caused by tobacco (%)", "format": ".0f" }
+        },
+        "color": {
+          "field": "attributable_pct", "type": "quantitative",
+          "scale": { "scheme": "oranges" },
+          "legend": null
+        },
+        "tooltip": [
+          { "field": "disease",          "type": "nominal", "title": "Disease" },
+          { "field": "attributable_pct", "type": "quantitative", "title": "Caused by tobacco (%)", "format": ".1f" }
+        ]
+      }
+    },
+    {
+      "mark": { "type": "text", "align": "left", "dx": 4, "fontSize": 10, "fontWeight": 500, "color": "#1a1a1a" },
+      "encoding": {
+        "y":    { "field": "disease", "type": "nominal", "sort": { "field": "attributable_pct", "op": "max", "order": "descending" } },
+        "x":    { "field": "attributable_pct", "type": "quantitative" },
+        "text": { "field": "attributable_pct", "type": "quantitative", "format": ".1f" }
+      }
+    },
+    {
+      "data": { "values": [ { "disease": "Lung cancer", "x": 30.6, "label": "1 in 3 lung-cancer years lost" } ] },
+      "mark": { "type": "text", "align": "left", "baseline": "middle", "dx": 30, "fontSize": 10, "fontStyle": "italic", "color": "#7e1d10" },
+      "encoding": {
+        "y":    { "field": "disease", "type": "nominal", "sort": { "field": "attributable_pct", "op": "max", "order": "descending" } },
+        "x":    { "field": "x", "type": "quantitative" },
+        "text": { "field": "label", "type": "nominal" }
+      }
+    }
+  ]
+}

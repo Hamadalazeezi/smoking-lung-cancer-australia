@@ -1,0 +1,75 @@
+{
+  "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+  "description": "Horizontal bar chart ranking states/territories by daily smoking rate, with the national average shown as a dashed rule. Click any bar to highlight it (and dim the rest); double-click to reset. The selection is shared with the map: clicking a state on the map dims the other bars here. Data: data/smoking_by_state.csv (state, smoking_rate, national_avg).",
+  "title": {
+    "text": "States and territories ranked by smoking",
+    "subtitle": "Daily smokers, adults 15+. National average shown as dashed line. Click to focus a state."
+  },
+  "width": "container",
+  "height": 320,
+  "data": { "url": "data/smoking_by_state.csv" },
+  "transform": [
+    { "calculate": "datum.state", "as": "state_name" }
+  ],
+  "layer": [
+    {
+      "params": [
+        {
+          "name": "state_pick",
+          "select": { "type": "point", "fields": ["state_name"], "on": "click", "clear": "dblclick" }
+        }
+      ],
+      "mark": { "type": "bar", "cornerRadiusEnd": 2 },
+      "encoding": {
+        "y": {
+          "field": "state",
+          "type": "nominal",
+          "sort": { "field": "smoking_rate", "op": "max", "order": "descending" },
+          "axis": { "title": null, "labelLimit": 200 }
+        },
+        "x": {
+          "field": "smoking_rate",
+          "type": "quantitative",
+          "axis": { "title": "Daily smokers (%)", "format": ".0f" }
+        },
+        "color": {
+          "field": "smoking_rate",
+          "type": "quantitative",
+          "scale": { "scheme": "oranges" },
+          "legend": null
+        },
+        "opacity": {
+          "condition": { "param": "state_pick", "value": 1, "empty": true },
+          "value": 0.25
+        },
+        "tooltip": [
+          { "field": "state",         "type": "nominal",      "title": "State / Territory" },
+          { "field": "smoking_rate",  "type": "quantitative", "title": "Daily smokers (%)", "format": ".1f" },
+          { "field": "national_avg",  "type": "quantitative", "title": "National average (%)", "format": ".1f" }
+        ]
+      }
+    },
+    {
+      "mark": { "type": "rule", "strokeDash": [4, 3], "color": "#1a1a1a" },
+      "encoding": {
+        "x": { "aggregate": "mean", "field": "national_avg", "type": "quantitative" }
+      }
+    },
+    {
+      "mark": { "type": "text", "align": "left", "dx": 6, "dy": -6, "fontSize": 11, "color": "#1a1a1a" },
+      "encoding": {
+        "x":    { "aggregate": "mean", "field": "national_avg", "type": "quantitative" },
+        "y":    { "datum": "Australian Capital Territory" },
+        "text": { "value": "National average" }
+      }
+    },
+    {
+      "mark": { "type": "text", "align": "left", "dx": 4, "fontSize": 10, "fontWeight": 500, "color": "#1a1a1a" },
+      "encoding": {
+        "y":    { "field": "state", "type": "nominal", "sort": { "field": "smoking_rate", "op": "max", "order": "descending" } },
+        "x":    { "field": "smoking_rate", "type": "quantitative" },
+        "text": { "field": "smoking_rate", "type": "quantitative", "format": ".0f" }
+      }
+    }
+  ]
+}

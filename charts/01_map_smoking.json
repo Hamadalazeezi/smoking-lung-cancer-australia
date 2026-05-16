@@ -1,0 +1,128 @@
+{
+  "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+  "description": "Three-layer Australia map. Layer 1: choropleth of daily smoking rate (%) by state/territory (oranges threshold scale). Layer 2: proportional-symbol circles at each state capital sized by the absolute number of daily smokers (population x smoking rate / 100). Layer 3: text labels for the capitals. Click a state to highlight its row in the linked bar chart; double-click anywhere to clear the selection. Source: ABS National Health Survey 2014-15 (smoking %); ABS Estimated Resident Population 2022 (state populations). Boundaries: rowanhogan/australian-states GeoJSON.",
+  "title": {
+    "text": "Where Australia smokes, and where the smokers actually live",
+    "subtitle": "Colour: daily smoking rate by state. Circles: number of daily smokers (state population x rate). Click a state to focus."
+  },
+  "width": "container",
+  "height": 560,
+  "projection": { "type": "mercator", "center": [134, -28], "scale": 850 },
+  "layer": [
+    {
+      "data": {
+        "url": "data/australia-states.geojson",
+        "format": { "type": "json", "property": "features" }
+      },
+      "params": [
+        {
+          "name": "state_pick",
+          "select": { "type": "point", "fields": ["state_name"], "on": "click", "clear": "dblclick" }
+        }
+      ],
+      "transform": [
+        {
+          "lookup": "properties.STATE_NAME",
+          "from": {
+            "data": { "url": "data/smoking_by_state.csv" },
+            "key": "state",
+            "fields": ["smoking_rate", "national_avg"]
+          }
+        },
+        { "calculate": "datum.properties.STATE_NAME", "as": "state_name" }
+      ],
+      "mark": { "type": "geoshape", "stroke": "#ffffff", "strokeWidth": 0.7 },
+      "encoding": {
+        "color": {
+          "field": "smoking_rate",
+          "type": "quantitative",
+          "scale": {
+            "type": "threshold",
+            "domain": [13, 15, 17, 19],
+            "range": ["#fee0c4", "#fdb178", "#f0763a", "#c0392b", "#7e1d10"]
+          },
+          "legend": {
+            "title": ["Daily smokers", "(% of adults)"],
+            "orient": "top-right"
+          }
+        },
+        "opacity": {
+          "condition": { "param": "state_pick", "value": 1, "empty": true },
+          "value": 0.25
+        },
+        "tooltip": [
+          { "field": "state_name",   "type": "nominal", "title": "State / Territory" },
+          { "field": "smoking_rate", "type": "quantitative", "title": "Daily smokers (%)", "format": ".1f" },
+          { "field": "national_avg", "type": "quantitative", "title": "Australian average (%)", "format": ".1f" }
+        ]
+      }
+    },
+    {
+      "data": { "url": "data/state_capitals_combined.csv" },
+      "transform": [
+        { "calculate": "datum.population * datum.smoking_rate / 100", "as": "smokers" },
+        { "calculate": "datum.state", "as": "state_name" }
+      ],
+      "mark": {
+        "type": "circle",
+        "color": "#1a1a1a",
+        "stroke": "#ffffff",
+        "strokeWidth": 1.2
+      },
+      "encoding": {
+        "longitude": { "field": "lng", "type": "quantitative" },
+        "latitude":  { "field": "lat", "type": "quantitative" },
+        "size": {
+          "field": "smokers", "type": "quantitative",
+          "scale": { "type": "sqrt", "range": [40, 1800] },
+          "legend": { "title": ["Daily smokers", "(approx. count)"], "format": ".2s", "orient": "bottom-right" }
+        },
+        "opacity": {
+          "condition": { "param": "state_pick", "value": 0.85, "empty": true },
+          "value": 0.2
+        },
+        "tooltip": [
+          { "field": "state",        "type": "nominal",      "title": "State / Territory" },
+          { "field": "capital",      "type": "nominal",      "title": "Capital" },
+          { "field": "population",   "type": "quantitative", "title": "Population",        "format": ",.0f" },
+          { "field": "smoking_rate", "type": "quantitative", "title": "Daily smokers (%)", "format": ".1f" },
+          { "field": "smokers",      "type": "quantitative", "title": "Daily smokers (n)", "format": ",.0f" }
+        ]
+      }
+    },
+    {
+      "data": { "url": "data/state_capitals_combined.csv" },
+      "mark": {
+        "type": "text",
+        "align": "left",
+        "baseline": "middle",
+        "dx": 12,
+        "fontSize": 11,
+        "fontWeight": 500,
+        "color": "#1a1a1a"
+      },
+      "encoding": {
+        "longitude": { "field": "lng", "type": "quantitative" },
+        "latitude":  { "field": "lat", "type": "quantitative" },
+        "text":      { "field": "capital", "type": "nominal" }
+      }
+    },
+    {
+      "data": { "url": "data/state_capitals_combined.csv" },
+      "mark": {
+        "type": "text",
+        "align": "left",
+        "baseline": "top",
+        "dx": 12,
+        "dy": 4,
+        "fontSize": 10,
+        "color": "#5a5a5a"
+      },
+      "encoding": {
+        "longitude": { "field": "lng", "type": "quantitative" },
+        "latitude":  { "field": "lat", "type": "quantitative" },
+        "text":      { "field": "smoking_rate", "type": "quantitative", "format": ".0f" }
+      }
+    }
+  ]
+}

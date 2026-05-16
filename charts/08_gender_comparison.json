@@ -1,0 +1,58 @@
+{
+  "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+  "description": "Diverging bar (population-pyramid style) comparing male vs. female rates of smoking and lung cancer. Annotated to highlight that the male-female gap is much wider for lung cancer than for smoking, reflecting decades of accumulated exposure. Data: data/by_gender.csv (sex, metric, value).",
+  "title": {
+    "text": "Men still smoke more, and get more lung cancer",
+    "subtitle": "Daily smoking rate (%) and age-standardised lung cancer incidence (per 100,000)."
+  },
+  "width": "container",
+  "height": 240,
+  "data": { "url": "data/by_gender.csv" },
+  "transform": [
+    { "calculate": "datum.sex == 'Male' ? -datum.value : datum.value", "as": "signed_value" }
+  ],
+  "layer": [
+    {
+      "mark": { "type": "bar", "cornerRadiusEnd": 2 },
+      "encoding": {
+        "y": {
+          "field": "metric", "type": "nominal",
+          "axis": { "title": null, "labelAngle": 0, "labelLimit": 200 }
+        },
+        "x": {
+          "field": "signed_value", "type": "quantitative",
+          "axis": { "title": "Male                              Female", "format": ".0f", "labelExpr": "abs(datum.value)" }
+        },
+        "color": {
+          "field": "sex", "type": "nominal",
+          "scale": { "domain": ["Male", "Female"], "range": ["#1f3a5f", "#c0392b"] },
+          "legend": { "title": null, "orient": "top" }
+        },
+        "tooltip": [
+          { "field": "sex",    "type": "nominal", "title": "Sex" },
+          { "field": "metric", "type": "nominal", "title": "Measure" },
+          { "field": "value",  "type": "quantitative", "title": "Value", "format": ".1f" }
+        ]
+      }
+    },
+    {
+      "mark": { "type": "text", "align": "center", "fontSize": 10, "fontWeight": 500, "color": "#ffffff" },
+      "encoding": {
+        "y":    { "field": "metric", "type": "nominal" },
+        "x":    { "field": "signed_value", "type": "quantitative" },
+        "text": { "field": "value", "type": "quantitative", "format": ".1f" }
+      }
+    },
+    {
+      "data": { "values": [
+        { "metric": "Lung cancer rate", "signed_value": 0, "label": "Men's lung-cancer risk is still ~32% higher than women's" }
+      ] },
+      "mark": { "type": "text", "align": "center", "baseline": "bottom", "dy": -32, "fontSize": 10, "fontStyle": "italic", "color": "#4a4a4a" },
+      "encoding": {
+        "y":    { "field": "metric", "type": "nominal" },
+        "x":    { "field": "signed_value", "type": "quantitative" },
+        "text": { "field": "label", "type": "nominal" }
+      }
+    }
+  ]
+}

@@ -1,0 +1,47 @@
+{
+  "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+  "description": "Custom dual-axis layered chart: smoking rate (orange area) plotted against lung cancer incidence (red line) on the same time axis, showing the ~25-year lag between behaviour and disease. Expected data: data/national_trend.csv with columns year (int), smoking_rate, cancer_rate.",
+  "title": {
+    "text": "The 25-year shadow",
+    "subtitle": "Australia's smoking rate falls (orange); lung cancer incidence (red) follows decades later."
+  },
+  "width": "container",
+  "height": 380,
+  "data": { "url": "data/national_trend.csv" },
+  "encoding": {
+    "x": {
+      "field": "year", "type": "temporal", "timeUnit": "year",
+      "axis": { "title": null, "format": "%Y" }
+    }
+  },
+  "layer": [
+    {
+      "mark": { "type": "area", "opacity": 0.35, "color": "#c0392b", "interpolate": "monotone" },
+      "encoding": {
+        "y": {
+          "field": "smoking_rate", "type": "quantitative",
+          "axis": { "title": "Daily smokers (%)", "titleColor": "#c0392b", "format": ".0f" }
+        }
+      }
+    },
+    {
+      "mark": { "type": "line", "color": "#1f3a5f", "strokeWidth": 2.8, "interpolate": "monotone" },
+      "encoding": {
+        "y": {
+          "field": "cancer_rate", "type": "quantitative",
+          "axis": { "title": "Lung cancer per 100,000", "titleColor": "#1f3a5f", "orient": "right" }
+        }
+      }
+    },
+    {
+      "mark": { "type": "text", "align": "left", "dx": 8, "fontSize": 11, "fontStyle": "italic", "color": "#4a4a4a" },
+      "data": { "values": [ { "year": "2005-01-01", "label": "Cancer peaks ~25 years after smoking peaked" } ] },
+      "encoding": {
+        "x":    { "field": "year",  "type": "temporal" },
+        "y":    { "value": 30 },
+        "text": { "field": "label", "type": "nominal" }
+      }
+    }
+  ],
+  "resolve": { "scale": { "y": "independent" } }
+}

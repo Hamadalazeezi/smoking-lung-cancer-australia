@@ -1,0 +1,92 @@
+{
+  "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+  "description": "Line chart of daily smoking prevalence in Australia over time, with key historical events as dashed rule annotations and a hover-rule that follows the mouse to reveal year-by-year readings. Data: data/smoking_trend.csv (year, smoking_rate). Annotations: data/smoking_events.csv (year, label).",
+  "title": {
+    "text": "Australia's smoking decline, 1980 to today",
+    "subtitle": "Daily smokers (%) of adults 15+. Hover anywhere to read off the year. Source: AIHW & ABS."
+  },
+  "width": "container",
+  "height": 320,
+  "layer": [
+    {
+      "data": { "url": "data/smoking_trend.csv" },
+      "mark": { "type": "line", "color": "#c0392b", "strokeWidth": 2.5, "interpolate": "monotone" },
+      "encoding": {
+        "x": { "field": "year",         "type": "temporal",     "timeUnit": "year", "axis": { "title": null, "format": "%Y" } },
+        "y": { "field": "smoking_rate", "type": "quantitative", "axis": { "title": "Daily smokers (%)" } }
+      }
+    },
+    {
+      "data": { "url": "data/smoking_trend.csv" },
+      "mark": { "type": "point", "filled": true, "color": "#c0392b", "size": 35 },
+      "encoding": {
+        "x": { "field": "year", "type": "temporal", "timeUnit": "year" },
+        "y": { "field": "smoking_rate", "type": "quantitative" }
+      }
+    },
+    {
+      "data": { "url": "data/smoking_events.csv" },
+      "mark": { "type": "rule", "color": "#9a9a9a", "strokeDash": [3, 3] },
+      "encoding": {
+        "x": { "field": "year", "type": "temporal", "timeUnit": "year" }
+      }
+    },
+    {
+      "data": { "url": "data/smoking_events.csv" },
+      "transform": [
+        { "filter": "indexof([1976,1995,2012], year(datum.year)) >= 0" }
+      ],
+      "mark": { "type": "text", "align": "left", "baseline": "top", "dx": 4, "dy": 4, "fontSize": 10, "color": "#4a4a4a" },
+      "encoding": {
+        "x":    { "field": "year",  "type": "temporal", "timeUnit": "year" },
+        "y":    { "value": 5 },
+        "text": { "field": "label", "type": "nominal" }
+      }
+    },
+    {
+      "data": { "url": "data/smoking_events.csv" },
+      "transform": [
+        { "filter": "indexof([1990,2006,2020], year(datum.year)) >= 0" }
+      ],
+      "mark": { "type": "text", "align": "left", "baseline": "top", "dx": 4, "dy": 4, "fontSize": 10, "color": "#4a4a4a" },
+      "encoding": {
+        "x":    { "field": "year",  "type": "temporal", "timeUnit": "year" },
+        "y":    { "value": 22 },
+        "text": { "field": "label", "type": "nominal" }
+      }
+    },
+    {
+      "data": { "url": "data/smoking_trend.csv" },
+      "params": [
+        {
+          "name": "year_hover",
+          "select": { "type": "point", "fields": ["year"], "nearest": true, "on": "mouseover", "clear": "mouseout" }
+        }
+      ],
+      "mark": { "type": "rule", "color": "#1a1a1a" },
+      "encoding": {
+        "x": { "field": "year", "type": "temporal", "timeUnit": "year" },
+        "opacity": {
+          "condition": { "param": "year_hover", "empty": false, "value": 0.5 },
+          "value": 0
+        },
+        "tooltip": [
+          { "field": "year",         "type": "temporal",     "timeUnit": "year", "title": "Year" },
+          { "field": "smoking_rate", "type": "quantitative", "title": "Daily smokers (%)", "format": ".1f" }
+        ]
+      }
+    },
+    {
+      "data": { "url": "data/smoking_trend.csv" },
+      "mark": { "type": "circle", "color": "#1a1a1a", "size": 90, "opacity": 0.9 },
+      "encoding": {
+        "x": { "field": "year", "type": "temporal", "timeUnit": "year" },
+        "y": { "field": "smoking_rate", "type": "quantitative" },
+        "opacity": {
+          "condition": { "param": "year_hover", "empty": false, "value": 1 },
+          "value": 0
+        }
+      }
+    }
+  ]
+}

@@ -1,0 +1,70 @@
+{
+  "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+  "description": "Line chart of lung cancer incidence over time, split by sex. The legend is interactive: click a swatch to isolate that series; click again (or off) to reset. A dashed rule annotates 1982, when male incidence peaked. Expected data: data/cancer_trend.csv with columns year (int), sex (Male|Female|Persons), incidence.",
+  "title": {
+    "text": "Lung cancer incidence over time, by sex",
+    "subtitle": "Age-standardised cases per 100,000. Click a legend swatch to isolate. Source: AIHW Cancer Data in Australia."
+  },
+  "width": "container",
+  "height": 320,
+  "data": { "url": "data/cancer_trend.csv" },
+  "transform": [ { "filter": "datum.sex !== 'Persons'" } ],
+  "layer": [
+    {
+      "params": [
+        {
+          "name": "sex_pick",
+          "select": { "type": "point", "fields": ["sex"] },
+          "bind": "legend"
+        }
+      ],
+      "mark": { "type": "line", "strokeWidth": 2.5, "interpolate": "monotone" },
+      "encoding": {
+        "x": { "field": "year", "type": "temporal", "timeUnit": "year", "axis": { "title": null, "format": "%Y" } },
+        "y": { "field": "incidence", "type": "quantitative", "axis": { "title": "Cases per 100,000" } },
+        "color": {
+          "field": "sex", "type": "nominal",
+          "scale": { "domain": ["Male", "Female"], "range": ["#1f3a5f", "#c0392b"] },
+          "legend": { "title": null, "orient": "top-right", "offset": 32 }
+        },
+        "opacity": {
+          "condition": { "param": "sex_pick", "value": 1, "empty": true },
+          "value": 0.15
+        },
+        "tooltip": [
+          { "field": "year",      "type": "temporal", "timeUnit": "year", "title": "Year" },
+          { "field": "sex",       "type": "nominal", "title": "Sex" },
+          { "field": "incidence", "type": "quantitative", "title": "Cases per 100,000", "format": ".1f" }
+        ]
+      }
+    },
+    {
+      "mark": { "type": "point", "filled": true, "size": 30 },
+      "encoding": {
+        "x":     { "field": "year", "type": "temporal", "timeUnit": "year" },
+        "y":     { "field": "incidence", "type": "quantitative" },
+        "color": { "field": "sex", "type": "nominal",
+                   "scale": { "domain": ["Male", "Female"], "range": ["#1f3a5f", "#c0392b"] },
+                   "legend": null },
+        "opacity": {
+          "condition": { "param": "sex_pick", "value": 1, "empty": true },
+          "value": 0.15
+        }
+      }
+    },
+    {
+      "data": { "values": [ { "year": "1982-01-01" } ] },
+      "mark": { "type": "rule", "strokeDash": [4, 3], "color": "#9a9a9a" },
+      "encoding": { "x": { "field": "year", "type": "temporal" } }
+    },
+    {
+      "data": { "values": [ { "year": "1982-01-01", "label": "Male incidence peaked here, even as smoking was already in decline" } ] },
+      "mark": { "type": "text", "align": "left", "baseline": "top", "dx": 6, "dy": 4, "fontSize": 10, "fontStyle": "italic", "color": "#4a4a4a" },
+      "encoding": {
+        "x":    { "field": "year", "type": "temporal" },
+        "y":    { "value": 12 },
+        "text": { "field": "label", "type": "nominal" }
+      }
+    }
+  ]
+}

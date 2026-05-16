@@ -1,0 +1,56 @@
+{
+  "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+  "description": "Lollipop / dot plot of fatality ratio (deaths / new cases) for the top cancers in Australia, 2022. Lung cancer's fatality ratio is by far the highest. Data: data/cancer_deaths_top.csv. Source: GLOBOCAN 2022.",
+  "title": {
+    "text": "Why lung cancer is so feared",
+    "subtitle": "Deaths in 2022 as a share of new cases the same year. Lung cancer kills more than two in three of those diagnosed."
+  },
+  "width": "container",
+  "height": 380,
+  "data": { "url": "data/cancer_deaths_top.csv" },
+  "transform": [
+    { "calculate": "datum.deaths / datum.cases", "as": "fatality_ratio" }
+  ],
+  "encoding": {
+    "y": {
+      "field": "cancer",
+      "type": "nominal",
+      "sort": { "field": "fatality_ratio", "op": "max", "order": "descending" },
+      "axis": { "title": null, "labelLimit": 200 }
+    },
+    "x": {
+      "field": "fatality_ratio",
+      "type": "quantitative",
+      "scale": { "domain": [0, 1] },
+      "axis": { "title": "Deaths ÷ new cases (2022)", "format": ".0%" }
+    }
+  },
+  "layer": [
+    {
+      "mark": { "type": "bar", "color": "#f1d2c8", "size": 3 }
+    },
+    {
+      "mark": { "type": "circle", "size": 260, "opacity": 0.95, "stroke": "#1a1a1a", "strokeWidth": 0.4 },
+      "encoding": {
+        "color": {
+          "field": "fatality_ratio",
+          "type": "quantitative",
+          "scale": { "scheme": "reds" },
+          "legend": null
+        },
+        "tooltip": [
+          { "field": "cancer",         "type": "nominal",      "title": "Cancer" },
+          { "field": "cases",          "type": "quantitative", "title": "New cases", "format": ",.0f" },
+          { "field": "deaths",         "type": "quantitative", "title": "Deaths",    "format": ",.0f" },
+          { "field": "fatality_ratio", "type": "quantitative", "title": "Fatality ratio", "format": ".0%" }
+        ]
+      }
+    },
+    {
+      "mark": { "type": "text", "align": "left", "dx": 10, "fontSize": 11, "color": "#1a1a1a" },
+      "encoding": {
+        "text": { "field": "fatality_ratio", "type": "quantitative", "format": ".0%" }
+      }
+    }
+  ]
+}

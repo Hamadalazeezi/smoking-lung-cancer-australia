@@ -1,0 +1,15 @@
+age_group,metric,value
+15-24,Smoking rate,5.5
+25-34,Smoking rate,11.0
+35-44,Smoking rate,12.4
+45-54,Smoking rate,13.6
+55-64,Smoking rate,12.7
+65-74,Smoking rate,8.4
+75+,Smoking rate,4.5
+15-24,Lung cancer rate,0.5
+25-34,Lung cancer rate,1.5
+35-44,Lung cancer rate,5.7
+45-54,Lung cancer rate,24.5
+55-64,Lung cancer rate,87.0
+65-74,Lung cancer rate,196.0
+75+,Lung cancer rate,302.5
