@@ -1,4 +1,4 @@
-# PDFs (course materials, not part of the visualization)
+# PDFs
 *.pdf
 
 # Claude / IDE
@@ -13,7 +13,6 @@ server.log
 # Temp / scratch files
 *.tmp
 *.tmp.*
-sketch/
 spec*.tmp.json
 
 # OS

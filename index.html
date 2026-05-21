@@ -58,6 +58,7 @@
     </p>
     <figure class="wide">
       <div id="vis-map-smoking" class="vis"></div>
+      <p class="hint"><span><b>Try it:</b> hover any state or capital circle for exact figures. Click a state to focus it &mdash; the ranking below updates with it. Double-click to reset.</span></p>
       <figcaption>
         Choropleth: daily smoking rate (%) by state. Circles at each capital
         are sized by the absolute number of daily smokers in that state.
@@ -65,6 +66,7 @@
     </figure>
     <figure class="wide">
       <div id="vis-bar-smoking" class="vis"></div>
+      <p class="hint"><span><b>Try it:</b> click a bar to focus that state (linked to the map above); double-click to reset. Hover for the exact rate.</span></p>
       <figcaption>States and territories ranked by daily smoking rate.</figcaption>
     </figure>
   </section>
@@ -96,10 +98,12 @@
     <div class="grid-2">
       <figure>
         <div id="vis-map-cancer" class="vis"></div>
+        <p class="hint"><span><b>Try it:</b> hover any bar to compare new cases against deaths the same year.</span></p>
         <figcaption>Top causes of cancer death in Australia, 2022. Source: GLOBOCAN / IARC.</figcaption>
       </figure>
       <figure>
         <div id="vis-bar-cancer" class="vis"></div>
+        <p class="hint"><span><b>Try it:</b> hover a bar for the exact share of that disease caused by tobacco.</span></p>
         <figcaption>Share of each disease's burden in Australia caused by tobacco. Source: AIHW Burden of Disease.</figcaption>
       </figure>
     </div>
@@ -115,10 +119,12 @@
     <div class="grid-2">
       <figure>
         <div id="vis-line-smoking" class="vis"></div>
+        <p class="hint"><span><b>Try it:</b> move your cursor across the chart to read the smoking rate for any year.</span></p>
         <figcaption>Daily smoking prevalence in Australia, by year.</figcaption>
       </figure>
       <figure>
         <div id="vis-line-cancer" class="vis"></div>
+        <p class="hint"><span><b>Try it:</b> hover the line for yearly values. Click <em>Male</em> or <em>Female</em> in the legend to isolate one series.</span></p>
         <figcaption>Lung cancer incidence per 100,000, by year.</figcaption>
       </figure>
     </div>
@@ -134,6 +140,7 @@
     </p>
     <figure class="wide">
       <div id="vis-scatter" class="vis"></div>
+      <p class="hint"><span><b>Try it:</b> hover any dot for the underlying case and death counts.</span></p>
       <figcaption>Top cancers in Australia, 2022: deaths as a proportion of new cases. Source: GLOBOCAN.</figcaption>
     </figure>
   </section>
@@ -148,10 +155,12 @@
     <div class="grid-2">
       <figure>
         <div id="vis-gender" class="vis"></div>
+        <p class="hint"><span><b>Try it:</b> hover either side of a bar for the underlying value.</span></p>
         <figcaption>Smoking and lung cancer rates by gender.</figcaption>
       </figure>
       <figure>
         <div id="vis-age" class="vis"></div>
+        <p class="hint"><span><b>Try it:</b> click a legend swatch to isolate smoking or lung cancer. Hover any bar for its value.</span></p>
         <figcaption>Smoking and lung cancer rates by age group.</figcaption>
       </figure>
     </div>
@@ -166,6 +175,7 @@
     </p>
     <figure class="wide">
       <div id="vis-multiples" class="vis"></div>
+      <p class="hint"><span><b>Try it:</b> hover any bar for the exact rate in that age band.</span></p>
       <figcaption>Small multiples by age group: smoking rate (red) and lung cancer rate (navy) on a log scale.</figcaption>
     </figure>
   </section>
@@ -173,13 +183,16 @@
   <section id="summary" class="story">
     <h2>The bottom line</h2>
     <p>
-      Lower smoking rates have already prevented thousands of lung cancer cases
-     , but because of the long lag, the largest gains for today's
-      smokers are still decades away.
+      Lower smoking rates have already prevented thousands of lung cancer cases,
+      but because of the long lag, the largest gains for today's
+      smokers are still decades away. To compare two measures on very different
+      scales, each series here is indexed to its own first reading (= 100): the
+      lines show how much each has changed, not their raw units.
     </p>
     <figure class="wide">
       <div id="vis-summary" class="vis"></div>
-      <figcaption>Custom view: smoking decline and the trailing lung cancer response.</figcaption>
+      <p class="hint"><span><b>Try it:</b> hover either line for the indexed value <em>and</em> the original figure (smoking % or cases per 100,000).</span></p>
+      <figcaption>Custom view: both series indexed to their first reading (= 100), so the smoking decline and the slower lung cancer response are readable on one axis.</figcaption>
     </figure>
   </section>
 

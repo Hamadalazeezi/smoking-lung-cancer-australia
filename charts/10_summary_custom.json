@@ -1,47 +1,112 @@
 {
   "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
-  "description": "Custom dual-axis layered chart: smoking rate (orange area) plotted against lung cancer incidence (red line) on the same time axis, showing the ~25-year lag between behaviour and disease. Expected data: data/national_trend.csv with columns year (int), smoking_rate, cancer_rate.",
+  "description": "Indexed line chart: Australia's smoking rate and lung cancer incidence each rebased to their own first reading (= 100), so two series measured in very different units (% of adults vs. cases per 100,000) can be compared on one shared, readable axis. Smoking falls ~70% from its 1980 baseline; lung cancer incidence, indexed from 1982, eases only slightly and far later, illustrating the multi-decade lag between behaviour and disease. The two source series are measured in different years, so each line connects its own available readings. Data: data/national_trend.csv with columns year, smoking_rate, cancer_rate (blank cells where a series was not measured that year).",
   "title": {
-    "text": "The 25-year shadow",
-    "subtitle": "Australia's smoking rate falls (orange); lung cancer incidence (red) follows decades later."
+    "text": "Smoking has fallen far faster than lung cancer",
+    "subtitle": "Each series indexed to its own first reading (= 100). Hover a line to read the indexed value and the original figure."
   },
   "width": "container",
   "height": 380,
-  "data": { "url": "data/national_trend.csv" },
-  "encoding": {
-    "x": {
-      "field": "year", "type": "temporal", "timeUnit": "year",
-      "axis": { "title": null, "format": "%Y" }
+  "data": {
+    "url": "data/national_trend.csv",
+    "format": {
+      "type": "csv",
+      "parse": { "year": "date:'%Y'", "smoking_rate": "number", "cancer_rate": "number" }
     }
   },
+  "transform": [
+    { "fold": ["smoking_rate", "cancer_rate"], "as": ["series", "value"] },
+    { "filter": "isValid(datum.value)" },
+    {
+      "calculate": "datum.series === 'smoking_rate' ? 'Daily smoking rate (%)' : 'Lung cancer (per 100,000)'",
+      "as": "series_label"
+    },
+    {
+      "window": [{ "op": "first_value", "field": "value", "as": "baseline" }],
+      "groupby": ["series"],
+      "sort": [{ "field": "year", "order": "ascending" }],
+      "frame": [null, null]
+    },
+    { "calculate": "datum.value / datum.baseline * 100", "as": "indexed" }
+  ],
   "layer": [
     {
-      "mark": { "type": "area", "opacity": 0.35, "color": "#c0392b", "interpolate": "monotone" },
+      "data": { "values": [ { "ref": 100 } ] },
+      "mark": { "type": "rule", "strokeDash": [4, 3], "color": "#9a9a9a" },
       "encoding": {
+        "y": { "field": "ref", "type": "quantitative" }
+      }
+    },
+    {
+      "data": { "values": [ { "ref": 100 } ] },
+      "mark": { "type": "text", "align": "left", "baseline": "bottom", "dx": 4, "dy": -3, "fontSize": 10, "color": "#9a9a9a" },
+      "encoding": {
+        "x": { "value": 4 },
+        "y": { "field": "ref", "type": "quantitative" },
+        "text": { "value": "First reading = 100" }
+      }
+    },
+    {
+      "mark": { "type": "line", "strokeWidth": 2.8, "interpolate": "monotone", "point": { "filled": true, "size": 45 } },
+      "encoding": {
+        "x": {
+          "field": "year", "type": "temporal", "timeUnit": "year",
+          "axis": { "title": null, "format": "%Y" }
+        },
         "y": {
-          "field": "smoking_rate", "type": "quantitative",
-          "axis": { "title": "Daily smokers (%)", "titleColor": "#c0392b", "format": ".0f" }
+          "field": "indexed", "type": "quantitative",
+          "scale": { "zero": true },
+          "axis": { "title": "Indexed to first reading (= 100)" }
+        },
+        "color": {
+          "field": "series_label", "type": "nominal",
+          "scale": {
+            "domain": ["Daily smoking rate (%)", "Lung cancer (per 100,000)"],
+            "range": ["#c0392b", "#1f3a5f"]
+          },
+          "legend": { "title": null, "orient": "top" }
         }
       }
     },
     {
-      "mark": { "type": "line", "color": "#1f3a5f", "strokeWidth": 2.8, "interpolate": "monotone" },
-      "encoding": {
-        "y": {
-          "field": "cancer_rate", "type": "quantitative",
-          "axis": { "title": "Lung cancer per 100,000", "titleColor": "#1f3a5f", "orient": "right" }
+      "params": [
+        {
+          "name": "hover",
+          "select": { "type": "point", "fields": ["series", "year"], "nearest": true, "on": "mouseover", "clear": "mouseout" }
         }
+      ],
+      "mark": { "type": "circle", "size": 140 },
+      "encoding": {
+        "x": { "field": "year", "type": "temporal", "timeUnit": "year" },
+        "y": { "field": "indexed", "type": "quantitative" },
+        "color": {
+          "field": "series_label", "type": "nominal",
+          "scale": {
+            "domain": ["Daily smoking rate (%)", "Lung cancer (per 100,000)"],
+            "range": ["#c0392b", "#1f3a5f"]
+          },
+          "legend": null
+        },
+        "opacity": {
+          "condition": { "param": "hover", "empty": false, "value": 1 },
+          "value": 0
+        },
+        "tooltip": [
+          { "field": "series_label", "type": "nominal", "title": "Series" },
+          { "field": "year", "type": "temporal", "timeUnit": "year", "title": "Year" },
+          { "field": "indexed", "type": "quantitative", "title": "Indexed (first = 100)", "format": ".0f" },
+          { "field": "value", "type": "quantitative", "title": "Original figure", "format": ".1f" }
+        ]
       }
     },
     {
-      "mark": { "type": "text", "align": "left", "dx": 8, "fontSize": 11, "fontStyle": "italic", "color": "#4a4a4a" },
-      "data": { "values": [ { "year": "2005-01-01", "label": "Cancer peaks ~25 years after smoking peaked" } ] },
+      "data": { "values": [ { "year": "1991-01-01", "y": 34 } ] },
+      "mark": { "type": "text", "align": "left", "baseline": "top", "dx": 4, "fontSize": 10, "fontStyle": "italic", "color": "#4a4a4a", "lineBreak": "\n" },
       "encoding": {
-        "x":    { "field": "year",  "type": "temporal" },
-        "y":    { "value": 30 },
-        "text": { "field": "label", "type": "nominal" }
+        "x": { "field": "year", "type": "temporal" },
+        "y": { "field": "y", "type": "quantitative" },
+        "text": { "value": ["By the mid-2000s, smoking was", "roughly half its 1980 level,", "while lung cancer had barely shifted."] }
       }
     }
-  ],
-  "resolve": { "scale": { "y": "independent" } }
+  ]
 }
