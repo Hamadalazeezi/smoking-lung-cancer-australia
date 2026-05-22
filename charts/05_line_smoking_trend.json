@@ -3,7 +3,7 @@
   "description": "Line chart of daily smoking prevalence in Australia over time, with key historical events as dashed rule annotations and a hover-rule that follows the mouse to reveal year-by-year readings. Data: data/smoking_trend.csv (year, smoking_rate). Annotations: data/smoking_events.csv (year, label).",
   "title": {
     "text": "Australia's smoking decline, 1980 to today",
-    "subtitle": "Daily smokers (%) of adults 15+. Hover anywhere to read off the year. Source: AIHW & ABS."
+    "subtitle": "Daily smokers (%) of adults aged 15 and over."
   },
   "width": "container",
   "height": 320,
@@ -33,25 +33,10 @@
     },
     {
       "data": { "url": "data/smoking_events.csv" },
-      "transform": [
-        { "filter": "indexof([1976,1995,2012], year(datum.year)) >= 0" }
-      ],
-      "mark": { "type": "text", "align": "left", "baseline": "top", "dx": 4, "dy": 4, "fontSize": 10, "color": "#4a4a4a" },
+      "mark": { "type": "text", "angle": 90, "align": "left", "baseline": "middle", "dx": 5, "fontSize": 9, "color": "#7a7a7a" },
       "encoding": {
         "x":    { "field": "year",  "type": "temporal", "timeUnit": "year" },
-        "y":    { "value": 5 },
-        "text": { "field": "label", "type": "nominal" }
-      }
-    },
-    {
-      "data": { "url": "data/smoking_events.csv" },
-      "transform": [
-        { "filter": "indexof([1990,2006,2020], year(datum.year)) >= 0" }
-      ],
-      "mark": { "type": "text", "align": "left", "baseline": "top", "dx": 4, "dy": 4, "fontSize": 10, "color": "#4a4a4a" },
-      "encoding": {
-        "x":    { "field": "year",  "type": "temporal", "timeUnit": "year" },
-        "y":    { "value": 22 },
+        "y":    { "value": 6 },
         "text": { "field": "label", "type": "nominal" }
       }
     },

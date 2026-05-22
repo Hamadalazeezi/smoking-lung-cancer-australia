@@ -1,5 +1,6 @@
-# PDFs
+# PDFs (course materials), but keep the required sketch deliverable
 *.pdf
+!sketch/*.pdf
 
 # Claude / IDE
 .claude/

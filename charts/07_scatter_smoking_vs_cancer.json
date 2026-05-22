@@ -3,7 +3,7 @@
   "description": "Lollipop / dot plot of fatality ratio (deaths / new cases) for the top cancers in Australia, 2022. Lung cancer's fatality ratio is by far the highest. Data: data/cancer_deaths_top.csv. Source: GLOBOCAN 2022.",
   "title": {
     "text": "Why lung cancer is so feared",
-    "subtitle": "Deaths in 2022 as a share of new cases the same year. Lung cancer kills more than two in three of those diagnosed."
+    "subtitle": "Deaths in 2022 as a share of new cases the same year."
   },
   "width": "container",
   "height": 380,

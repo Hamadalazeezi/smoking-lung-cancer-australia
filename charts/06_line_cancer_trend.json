@@ -3,7 +3,7 @@
   "description": "Line chart of lung cancer incidence over time, split by sex. The legend is interactive: click a swatch to isolate that series; click again (or off) to reset. A dashed rule annotates 1982, when male incidence peaked. Expected data: data/cancer_trend.csv with columns year (int), sex (Male|Female|Persons), incidence.",
   "title": {
     "text": "Lung cancer incidence over time, by sex",
-    "subtitle": "Age-standardised cases per 100,000. Click a legend swatch to isolate. Source: AIHW Cancer Data in Australia."
+    "subtitle": "Age-standardised cases per 100,000, by sex."
   },
   "width": "container",
   "height": 320,

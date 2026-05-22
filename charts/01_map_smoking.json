@@ -1,9 +1,9 @@
 {
   "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
-  "description": "Three-layer Australia map. Layer 1: choropleth of daily smoking rate (%) by state/territory (oranges threshold scale). Layer 2: proportional-symbol circles at each state capital sized by the absolute number of daily smokers (population x smoking rate / 100). Layer 3: text labels for the capitals. Click a state to highlight its row in the linked bar chart; double-click anywhere to clear the selection. Source: ABS National Health Survey 2014-15 (smoking %); ABS Estimated Resident Population 2022 (state populations). Boundaries: rowanhogan/australian-states GeoJSON.",
+  "description": "Three-layer Australia map. Layer 1: choropleth of daily smoking rate (%) by state/territory (oranges threshold scale). Layer 2: proportional-symbol circles at each state capital sized by the absolute number of daily smokers (population x smoking rate / 100), drawn semi-transparent so the labels stay readable. Layer 3: capital name and rate labels with a white halo so they read over both the map and the circles. Click a state to highlight its row in the linked bar chart; double-click anywhere to clear the selection. Source: ABS National Health Survey 2014-15 (smoking %); ABS Estimated Resident Population 2022 (state populations). Boundaries: rowanhogan/australian-states GeoJSON.",
   "title": {
     "text": "Where Australia smokes, and where the smokers actually live",
-    "subtitle": "Colour: daily smoking rate by state. Circles: number of daily smokers (state population x rate). Click a state to focus."
+    "subtitle": "Colour: daily smoking rate by state. Circle size: number of smokers."
   },
   "width": "container",
   "height": 560,
@@ -67,19 +67,19 @@
         "type": "circle",
         "color": "#1a1a1a",
         "stroke": "#ffffff",
-        "strokeWidth": 1.2
+        "strokeWidth": 1
       },
       "encoding": {
         "longitude": { "field": "lng", "type": "quantitative" },
         "latitude":  { "field": "lat", "type": "quantitative" },
         "size": {
           "field": "smokers", "type": "quantitative",
-          "scale": { "type": "sqrt", "range": [40, 1800] },
+          "scale": { "type": "sqrt", "range": [30, 1100] },
           "legend": { "title": ["Daily smokers", "(approx. count)"], "format": ".2s", "orient": "bottom-right" }
         },
         "opacity": {
-          "condition": { "param": "state_pick", "value": 0.85, "empty": true },
-          "value": 0.2
+          "condition": { "param": "state_pick", "value": 0.6, "empty": true },
+          "value": 0.15
         },
         "tooltip": [
           { "field": "state",        "type": "nominal",      "title": "State / Territory" },
@@ -96,9 +96,28 @@
         "type": "text",
         "align": "left",
         "baseline": "middle",
-        "dx": 12,
+        "dx": 13,
         "fontSize": 11,
-        "fontWeight": 500,
+        "fontWeight": 600,
+        "stroke": "#ffffff",
+        "strokeWidth": 3,
+        "fill": "#ffffff"
+      },
+      "encoding": {
+        "longitude": { "field": "lng", "type": "quantitative" },
+        "latitude":  { "field": "lat", "type": "quantitative" },
+        "text":      { "field": "capital", "type": "nominal" }
+      }
+    },
+    {
+      "data": { "url": "data/state_capitals_combined.csv" },
+      "mark": {
+        "type": "text",
+        "align": "left",
+        "baseline": "middle",
+        "dx": 13,
+        "fontSize": 11,
+        "fontWeight": 600,
         "color": "#1a1a1a"
       },
       "encoding": {
@@ -113,8 +132,27 @@
         "type": "text",
         "align": "left",
         "baseline": "top",
-        "dx": 12,
-        "dy": 4,
+        "dx": 13,
+        "dy": 5,
+        "fontSize": 10,
+        "stroke": "#ffffff",
+        "strokeWidth": 3,
+        "fill": "#ffffff"
+      },
+      "encoding": {
+        "longitude": { "field": "lng", "type": "quantitative" },
+        "latitude":  { "field": "lat", "type": "quantitative" },
+        "text":      { "field": "smoking_rate", "type": "quantitative", "format": ".0f" }
+      }
+    },
+    {
+      "data": { "url": "data/state_capitals_combined.csv" },
+      "mark": {
+        "type": "text",
+        "align": "left",
+        "baseline": "top",
+        "dx": 13,
+        "dy": 5,
         "fontSize": 10,
         "color": "#5a5a5a"
       },

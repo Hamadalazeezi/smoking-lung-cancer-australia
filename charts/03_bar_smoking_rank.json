@@ -3,7 +3,7 @@
   "description": "Horizontal bar chart ranking states/territories by daily smoking rate, with the national average shown as a dashed rule. Click any bar to highlight it (and dim the rest); double-click to reset. The selection is shared with the map: clicking a state on the map dims the other bars here. Data: data/smoking_by_state.csv (state, smoking_rate, national_avg).",
   "title": {
     "text": "States and territories ranked by smoking",
-    "subtitle": "Daily smokers, adults 15+. National average shown as dashed line. Click to focus a state."
+    "subtitle": "Daily smokers, adults 15+. Dashed line shows the national average."
   },
   "width": "container",
   "height": 320,

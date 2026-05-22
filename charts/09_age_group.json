@@ -2,8 +2,8 @@
   "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
   "description": "Grouped bar chart of smoking rate and lung cancer rate by age group, on a shared axis. The legend is interactive: click a swatch to isolate one metric. A subtle annotation marks the 55-64 band where lung cancer overtakes smoking. Expected data: data/by_age_group.csv with columns age_group (ordered), metric (Smoking rate|Lung cancer rate), value.",
   "title": {
-    "text": "Smoking is a younger person's habit, lung cancer an older person's disease",
-    "subtitle": "Smoking rate (per 100) and lung cancer incidence (per 100,000) by age group. Click a legend swatch to isolate."
+    "text": ["Smoking is a younger person's habit,", "lung cancer an older person's disease"],
+    "subtitle": "Smoking rate and lung cancer incidence by age group."
   },
   "width": "container",
   "height": 320,
@@ -46,12 +46,12 @@
       }
     },
     {
-      "data": { "values": [ { "age_group": "55-64", "label": "Cancer overtakes smoking around 55-64" } ] },
-      "mark": { "type": "text", "align": "center", "baseline": "bottom", "dy": -8, "fontSize": 11, "fontStyle": "italic", "color": "#4a4a4a" },
+      "data": { "values": [ { "age_group": "25-34" } ] },
+      "mark": { "type": "text", "align": "left", "baseline": "top", "fontSize": 10, "fontStyle": "italic", "color": "#4a4a4a", "lineBreak": "\n" },
       "encoding": {
         "x":    { "field": "age_group", "type": "ordinal", "sort": ["15-24", "25-34", "35-44", "45-54", "55-64", "65-74", "75+"] },
-        "y":    { "value": 0 },
-        "text": { "field": "label", "type": "nominal" }
+        "y":    { "datum": 330, "type": "quantitative" },
+        "text": { "value": ["Lung cancer overtakes smoking", "from the 55-64 group onward"] }
       }
     }
   ]

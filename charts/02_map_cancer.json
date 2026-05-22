@@ -3,7 +3,7 @@
   "description": "Layered horizontal bars: lung cancer ranks 5th by new cases but 1st by deaths in Australia (GLOBOCAN 2022). Each row is a cancer; the light bar shows new cases, the dark bar shows deaths the same year. An annotation flags lung cancer's outsized deaths-to-cases ratio. Data: data/cancer_deaths_top.csv (cancer, deaths, cases).",
   "title": {
     "text": "Lung cancer is Australia's deadliest cancer",
-    "subtitle": "New cases (light) vs. deaths (dark), 2022. Source: GLOBOCAN / IARC."
+    "subtitle": "New cases (light) versus deaths (dark), 2022."
   },
   "width": "container",
   "height": 380,
